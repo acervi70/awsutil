@@ -10,3 +10,15 @@ buildNumber.properties
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
+
+/.serverless
+/.classpath
+/.project
+/.settings
+/logback-test.xml
+/.DS_Store
+/bin/
+/testfiles/
+/staging/
+/deploy/
+/logs/
