@@ -22,3 +22,17 @@ buildNumber.properties
 /staging/
 /deploy/
 /logs/
+
+src/\.DS_Store
+
+src/main/\.DS_Store
+
+src/main/java/\.DS_Store
+
+src/main/java/com/\.DS_Store
+
+src/main/java/com/reigninbinary/\.DS_Store
+
+src/main/java/com/reigninbinary/util/\.DS_Store
+
+src/main/java/com/reigninbinary/util/aws/\.DS_Store
