@@ -24,7 +24,7 @@ public class DynamodbManager {
     	
     		AmazonDynamoDB client;
     		
-    		String region = DynamodbEnv.getDynamodbRegion();
+    		String region = DynamodbConfig.getDynamodbRegion();
     		if (region == null || region.isEmpty()) {
     			client = AmazonDynamoDBClientBuilder.standard().build();
     		}
@@ -68,7 +68,7 @@ public class DynamodbManager {
 
 	public static void handleUnprocessedItems(FailedBatch failedBatch) throws Exception{
 		
-		int maxRetries = DynamodbEnv.getMaxRetryUnprocessedItems();
+		int maxRetries = DynamodbConfig.getMaxRetryUnprocessedItems();
 		
 		int attempts = 0;
 		
