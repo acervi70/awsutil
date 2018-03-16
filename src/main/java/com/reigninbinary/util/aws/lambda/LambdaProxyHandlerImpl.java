@@ -9,10 +9,10 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 
 public class LambdaProxyHandlerImpl implements RequestStreamHandler {
 	
-	LambdaProxyHandlerFactory httpMethodHandlerFactory;
+	LambdaProxyHandlerFactory lambdaProxyHandlerFactory;
 	
-	public LambdaProxyHandlerImpl(LambdaProxyHandlerFactory httpMethodHandlerFactory) {
-		this.httpMethodHandlerFactory = httpMethodHandlerFactory;
+	public LambdaProxyHandlerImpl(LambdaProxyHandlerFactory lamdaProxyHandlerFactory) {
+		this.lambdaProxyHandlerFactory = lamdaProxyHandlerFactory;
 	}
 
     @Override
@@ -23,7 +23,7 @@ public class LambdaProxyHandlerImpl implements RequestStreamHandler {
 			LambdaProxyInput input = new LambdaProxyInput(inputStream);
 			context.getLogger().log(input.getLogMessage());
 			
-			LambdaProxyHandler handler = httpMethodHandlerFactory.getHandler(input);
+			LambdaProxyHandler handler = lambdaProxyHandlerFactory.getHandler(input);
 			output = handler.handleRequest(input, context);
 		} 
     		catch (Exception e) {

@@ -3,6 +3,7 @@ package com.reigninbinary.util.aws.dynamodb;
 import java.util.List;
 import java.util.Map;
 
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -24,12 +25,19 @@ public class DynamodbManager {
     	
     		AmazonDynamoDB client;
     		
-    		String region = DynamodbConfig.getDynamodbRegion();
-    		if (region == null || region.isEmpty()) {
-    			client = AmazonDynamoDBClientBuilder.standard().build();
+    		if (DynamodbConfig.getRunLocal()) {
+			client = AmazonDynamoDBClientBuilder.standard().withEndpointConfiguration(
+					new AwsClientBuilder.EndpointConfiguration(
+							DynamodbConfig.RUNLOCAL_ENDPOINT, DynamodbConfig.RUNLOCAL_REGION)).build();    			    			
     		}
     		else {
-    			client = AmazonDynamoDBClientBuilder.standard().withRegion(region).build();
+    			String region = DynamodbConfig.getRegion();
+	    		if (region == null || region.isEmpty()) {
+	    			client = AmazonDynamoDBClientBuilder.standard().build();
+	    		}
+	    		else {
+	    			client = AmazonDynamoDBClientBuilder.standard().withRegion(region).build();
+	    		}
     		}
     		
     		dynamodb = new DynamoDB(client);
@@ -68,21 +76,16 @@ public class DynamodbManager {
 
 	public static void handleUnprocessedItems(FailedBatch failedBatch) throws Exception{
 		
-		int maxRetries = DynamodbConfig.getMaxRetryUnprocessedItems();
+		Map<String, List<WriteRequest>> mapUnprocessed = failedBatch.getUnprocessedItems();
 		
-		int attempts = 0;
-		
-		Map<String, List<WriteRequest>> mapUnprocessed = failedBatch.getUnprocessedItems();	
-		
-		while (mapUnprocessed.size() > 0 && attempts++ < maxRetries) {
+		for (int attempts = 0; mapUnprocessed.size() > 0 
+				&& attempts++ < DynamodbConfig.getMaxRetryUnprocessedItems();) {
 			
 			// https://github.com/aws/aws-sdk-java/blob/master/src/samples/AmazonDynamoDBDocumentAPI/quick-start/com/amazonaws/services/dynamodbv2/document/quickstart/I_BatchWriteItemTest.java
             // exponential backoff per DynamoDB recommendation.
             Thread.sleep((1 << attempts) * 1000);
 			
-			BatchWriteItemOutcome outcome = 
-					DynamodbManager.dynamodb().batchWriteItemUnprocessed(mapUnprocessed);	
-			
+			BatchWriteItemOutcome outcome = dynamodb().batchWriteItemUnprocessed(mapUnprocessed);				
 			mapUnprocessed = outcome.getUnprocessedItems();
 		}
 		
