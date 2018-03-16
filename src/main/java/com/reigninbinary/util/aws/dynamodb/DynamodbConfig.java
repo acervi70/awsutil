@@ -1,6 +1,6 @@
 package com.reigninbinary.util.aws.dynamodb;
 
-import com.reigninbinary.util.aws.AwsConfig;
+import com.reigninbinary.core.Config;
 
 
 public class DynamodbConfig {
@@ -23,22 +23,21 @@ public class DynamodbConfig {
 
 	public static boolean getRunLocal() {
 		
-		return AwsConfig.getConfigParam(RUNLOCAL_PARAM, RUNLOCAL_DEFAULT);
+		return Config.getConfigParam(RUNLOCAL_PARAM, RUNLOCAL_DEFAULT);
 	}
 	
 	public static String getRegion() {
 		
-		return AwsConfig.getConfigParam(REGION_PARAM, REGION_DEFAULT);
+		return Config.getConfigParam(REGION_PARAM, REGION_DEFAULT);
 	}
 	
 	public static int getMaxBatchWriteItem() {
 		
-		return AwsConfig.getConfigParam(MAX_BATCHWRITEITEM_PARAM, MAX_BATCHWRITEITEM_DEFAULT);
+		return Config.getConfigParam(MAX_BATCHWRITEITEM_PARAM, MAX_BATCHWRITEITEM_DEFAULT);
 	}
 	
 	public static int getMaxRetryUnprocessedItems() {
 		
-		return AwsConfig.getConfigParam(MAX_RETRYUNPROCESSEDITEMS_PARAM, MAX_RETRYUNPROCESSEDITEMS_DEFAULT);
+		return Config.getConfigParam(MAX_RETRYUNPROCESSEDITEMS_PARAM, MAX_RETRYUNPROCESSEDITEMS_DEFAULT);
 	}
-	
 }

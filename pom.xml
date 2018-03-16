@@ -49,6 +49,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.reigninbinary</groupId>
+      <artifactId>rib-core</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
 	<!-- https://mvnrepository.com/artifact/org.elasticsearch.client/elasticsearch-rest-high-level-client -->
 	<dependency>
 	    <groupId>org.elasticsearch.client</groupId>
