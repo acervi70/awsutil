@@ -1,4 +1,4 @@
-package com.reigninbinary.util.aws.dynamodb;
+package com.reigninbinary.aws.dynamodb;
 
 import java.util.Map;
 
@@ -10,8 +10,8 @@ public class DynamodbUtil {
 
 	public static Item getItemFromAttrbuteMap(Map<String, AttributeValue> mapAttribtes) {
 		
-		// TODO: Internal AWS - it's probably not guaranteed to be supported forever.
-		@SuppressWarnings("deprecation")
+		// TODO: Internal AWS - keep an eye out.
+		// this was deprectaed at some point but not anymore it seems.
 		Map<String, Object> simpleMap = InternalUtils.toSimpleMapValue(mapAttribtes);
 		
 		return Item.fromMap(simpleMap);

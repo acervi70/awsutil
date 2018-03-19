@@ -1,4 +1,4 @@
-package com.reigninbinary.util.aws.lambda;
+package com.reigninbinary.aws.lambda;
 
 import java.io.IOException;
 import java.io.InputStream;

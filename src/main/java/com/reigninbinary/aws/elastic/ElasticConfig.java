@@ -1,4 +1,4 @@
-package com.reigninbinary.util.aws.elastic;
+package com.reigninbinary.aws.elastic;
 
 import com.reigninbinary.core.Config;
 

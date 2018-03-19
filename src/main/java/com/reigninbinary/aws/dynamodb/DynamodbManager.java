@@ -1,9 +1,10 @@
-package com.reigninbinary.util.aws.dynamodb;
+package com.reigninbinary.aws.dynamodb;
 
 import java.util.List;
 import java.util.Map;
 
 import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -25,10 +26,10 @@ public class DynamodbManager {
     	
     		AmazonDynamoDB client;
     		
-    		if (DynamodbConfig.getRunLocal()) {
-			client = AmazonDynamoDBClientBuilder.standard().withEndpointConfiguration(
-					new AwsClientBuilder.EndpointConfiguration(
-							DynamodbConfig.RUNLOCAL_ENDPOINT, DynamodbConfig.RUNLOCAL_REGION)).build();    			    			
+    		if (DynamodbConfig.getRunLocal()) {    			
+    			EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(
+    					DynamodbConfig.RUNLOCAL_ENDPOINT, DynamodbConfig.RUNLOCAL_REGION);    			
+			client = AmazonDynamoDBClientBuilder.standard().withEndpointConfiguration(endpoint).build();    			    			
     		}
     		else {
     			String region = DynamodbConfig.getRegion();
