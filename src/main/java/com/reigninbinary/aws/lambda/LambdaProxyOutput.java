@@ -9,8 +9,10 @@ import org.json.simple.JSONObject;
 
 /* Output Format of a Lambda Function for Proxy Integration
  * https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
- * Headers are optional.
- * Body is user supplied return data.
+ * headers are optional.
+ * body is user supplied return data.
+ * status code is normally http status code
+ * isBase64Encoded is assumed false for the time being.
  * 
 	{
 	    "isBase64Encoded": true|false,
@@ -22,20 +24,22 @@ import org.json.simple.JSONObject;
 
 public class LambdaProxyOutput {
 
-	public static final String BODY = "body";
+	private static final String CHARSET_ENCODING = "UTF-8";
 
-	protected static final String CHARSET_ENCODING = "UTF-8";
+	private static final String BODY = "body";
+	private static final String STATUS_CODE = "statusCode";
+	private static final String EXCEPTION = "exception";
+	
+	// TODO: allow client to specify 'true' for this value.
+	private static final String ISBASE64ENCODED = "isBase64Encoded";
+	private static final boolean BASE64ENCODED = false;
 
-	protected static final String STATUS_CODE = "statusCode";
-	protected static final String BASE64ENCODED = "isBase64Encoded";
-	protected static final String EXCEPTION = "exception";
+	private static final int STATUS_CODE_OK = 200;
+	private static final int STATUS_CODE_ERROR = 500;
 	
-	protected static final int STATUS_CODE_OK = 200;
-	protected static final int STATUS_CODE_ERROR = 500;
+	private static String LOG_MSG = "LambdaProxyOutput = %s";
 	
-	public static String LOG_MSG = "LambdaProxyOutput = %s";
-	
-	protected JSONObject jsonResponse;
+	private JSONObject jsonResponse;
 				
 	public LambdaProxyOutput(JSONObject jsonBody) {
 
@@ -68,10 +72,6 @@ public class LambdaProxyOutput {
 	
 	public void writeToOutputStream(OutputStream outputStream) throws IOException {
 		
-        // An exception here would indicate a failure to write to the output stream
-        // which is a very bad thing ;) The client won't get an indication of the result
-        // irregardless how hard we try so let exception bubble up to the infrastructure.
-        
         OutputStreamWriter writer = new OutputStreamWriter(outputStream, CHARSET_ENCODING);
         writer.write(jsonResponse.toJSONString());  
         writer.close();
@@ -94,7 +94,7 @@ public class LambdaProxyOutput {
 		// we want the whole json object in the response.
 		// lambda proxy only returns the body text.
 		jsonResponse = new JSONObject();
-		jsonResponse.put(BASE64ENCODED, false);
+		jsonResponse.put(ISBASE64ENCODED, BASE64ENCODED);
 		jsonResponse.put(BODY, jsonBody.toJSONString());
 		jsonResponse.put(STATUS_CODE, statusCode);
 	}

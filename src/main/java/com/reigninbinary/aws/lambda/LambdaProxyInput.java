@@ -55,11 +55,11 @@ import org.json.simple.parser.ParseException;
 
 public class LambdaProxyInput {
 	
-	public static final String BODY = "body";
-	public static final String RESOURCE = "resource";
-	public static final String HTTP_METHOD = "httpMethod";
-	public static final String PATH_PARAMS = "pathParameters";
-	public static final String QUERYSTRING_PARAMS = "queryStringParameters";		
+	private static final String BODY = "body";
+	private static final String RESOURCE = "resource";
+	private static final String HTTP_METHOD = "httpMethod";
+	private static final String PATH_PARAMS = "pathParameters";
+	private static final String QUERYSTRING_PARAMS = "queryStringParameters";		
 	
 	private static String LOG_MSG = "LambdaProxyInput = %s";
 

@@ -13,16 +13,17 @@ import com.amazonaws.services.dynamodbv2.document.BatchWriteItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 
+// Singleton with lazy loading of dynamodb client.
 
 public class DynamodbManager {
-	
-	private final AmazonDynamoDB client;
 	
     private static class DynamodbManagerInstance {
     	
         private static final DynamodbManager INSTANCE = new DynamodbManager();
     }
     
+	private final AmazonDynamoDB client;
+	
     private DynamodbManager() {
     	
 		if (DynamodbConfig.getRunLocal()) {    			
@@ -63,6 +64,7 @@ public class DynamodbManager {
 		}
 	}
 
+	// https://github.com/aws/aws-sdk-java/blob/master/src/samples/AmazonDynamoDBDocumentAPI/quick-start/com/amazonaws/services/dynamodbv2/document/quickstart/I_BatchWriteItemTest.java
 	public static void handleUnprocessedItems(FailedBatch failedBatch) throws Exception{
 		
 		Map<String, List<WriteRequest>> mapUnprocessed = failedBatch.getUnprocessedItems();
@@ -70,7 +72,6 @@ public class DynamodbManager {
 		for (int attempts = 0; mapUnprocessed.size() > 0 
 				&& attempts++ < DynamodbConfig.getMaxRetryUnprocessedItems();) {
 			
-			// https://github.com/aws/aws-sdk-java/blob/master/src/samples/AmazonDynamoDBDocumentAPI/quick-start/com/amazonaws/services/dynamodbv2/document/quickstart/I_BatchWriteItemTest.java
             // exponential backoff per DynamoDB recommendation.
             Thread.sleep((1 << attempts) * 1000);
 			
@@ -79,7 +80,7 @@ public class DynamodbManager {
 		}
 		
 		if (mapUnprocessed.size() > 0 ) {
-			final String RETRY_ERROR = "unable to update/retry the entire list of failed batches";
+			final String RETRY_ERROR = "unable to update/retry all records in failed batch";
 			throw new Exception(RETRY_ERROR);
 		}
 	}

@@ -1,6 +1,6 @@
 package com.reigninbinary.aws.dynamodb;
 
-import com.reigninbinary.core.Config;
+import com.reigninbinary.core.util.CoreConfig;
 
 
 public class DynamodbConfig {
@@ -26,31 +26,31 @@ public class DynamodbConfig {
 
 	public static boolean getRunLocal() {
 		
-		return Config.getConfigParam(RUNLOCAL_PARAM, RUNLOCAL_DEFAULT);
+		return CoreConfig.getConfigParam(RUNLOCAL_PARAM, RUNLOCAL_DEFAULT);
 	}
 	
 	public static String getRunLocalRegion() {
 		
-		return Config.getConfigParam(RUNLOCAL_REGION, RUNLOCAL_REGION_DEFAULT);
+		return CoreConfig.getConfigParam(RUNLOCAL_REGION, RUNLOCAL_REGION_DEFAULT);
 	}
 	
 	public static String getRunLocalEndpoint() {
 		
-		return Config.getConfigParam(RUNLOCAL_ENDPOINT, RUNLOCAL_ENDPOINT_DEFAULT);
+		return CoreConfig.getConfigParam(RUNLOCAL_ENDPOINT, RUNLOCAL_ENDPOINT_DEFAULT);
 	}
 	
 	public static String getRegion() {
 		
-		return Config.getConfigParam(REGION_PARAM, REGION_DEFAULT);
+		return CoreConfig.getConfigParam(REGION_PARAM, REGION_DEFAULT);
 	}
 	
 	public static int getMaxBatchWriteItem() {
 		
-		return Config.getConfigParam(MAX_BATCHWRITEITEM_PARAM, MAX_BATCHWRITEITEM_DEFAULT);
+		return CoreConfig.getConfigParam(MAX_BATCHWRITEITEM_PARAM, MAX_BATCHWRITEITEM_DEFAULT);
 	}
 	
 	public static int getMaxRetryUnprocessedItems() {
 		
-		return Config.getConfigParam(MAX_RETRYUNPROCESSEDITEMS_PARAM, MAX_RETRYUNPROCESSEDITEMS_DEFAULT);
+		return CoreConfig.getConfigParam(MAX_RETRYUNPROCESSEDITEMS_PARAM, MAX_RETRYUNPROCESSEDITEMS_DEFAULT);
 	}
 }

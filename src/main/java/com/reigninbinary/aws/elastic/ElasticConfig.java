@@ -1,6 +1,6 @@
 package com.reigninbinary.aws.elastic;
 
-import com.reigninbinary.core.Config;
+import com.reigninbinary.core.util.CoreConfig;
 
 
 public class ElasticConfig {
@@ -20,21 +20,21 @@ public class ElasticConfig {
 
 	public static String getHostname() {
 	
-		return Config.getConfigParam(HOSTNAME_PARAM, HOSTNAME_DEFAULT);
+		return CoreConfig.getConfigParam(HOSTNAME_PARAM, HOSTNAME_DEFAULT);
 	}
 	
 	public static int getPort() {
 		
-		return Config.getConfigParam(PORT_PARAM, PORT_DEFAULT);
+		return CoreConfig.getConfigParam(PORT_PARAM, PORT_DEFAULT);
 	}
 	
 	public static String getScheme() {
 		
-		return Config.getConfigParam(SCHEME_PARAM, SCHEME_DEFAULT);
+		return CoreConfig.getConfigParam(SCHEME_PARAM, SCHEME_DEFAULT);
 	}
 	
 	public static int getMaxRetryTimeoutMillis() {
 		
-		return Config.getConfigParam(MAX_RETRYTIMEOUTMILLS_PARAM, MAX_RETRYTIMEOUTMILLS_DEFAULT);
+		return CoreConfig.getConfigParam(MAX_RETRYTIMEOUTMILLS_PARAM, MAX_RETRYTIMEOUTMILLS_DEFAULT);
 	}
 }
