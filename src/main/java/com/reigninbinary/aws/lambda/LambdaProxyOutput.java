@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 /* Output Format of a Lambda Function for Proxy Integration
  * https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
  * Headers are optional.
+ * Body is user supplied return data.
  * 
 	{
 	    "isBase64Encoded": true|false,
@@ -20,6 +21,8 @@ import org.json.simple.JSONObject;
 */
 
 public class LambdaProxyOutput {
+
+	public static final String BODY = "body";
 
 	protected static final String CHARSET_ENCODING = "UTF-8";
 
@@ -33,14 +36,24 @@ public class LambdaProxyOutput {
 	public static String LOG_MSG = "LambdaProxyOutput = %s";
 	
 	protected JSONObject jsonResponse;
-			
-	protected LambdaProxyOutput() {
-		
+				
+	public LambdaProxyOutput(JSONObject jsonBody) {
+
+		this(jsonBody, STATUS_CODE_OK);		
 	}
 	
-	public LambdaProxyOutput(Exception e) {
+	public LambdaProxyOutput(JSONObject jsonBody, int statusCode) {
 		
-		createResponse(getBody(e));		
+		createResponse(jsonBody, statusCode);		
+	}
+	
+	public LambdaProxyOutput(Exception e)  {
+		this(e, STATUS_CODE_ERROR);		
+	}
+	
+	public LambdaProxyOutput(Exception e, int statusCode) {
+		
+		createResponse(getErrorBody(e, statusCode), statusCode);		
 	}
 	
 	public String getAsJsonString() {
@@ -66,23 +79,23 @@ public class LambdaProxyOutput {
 	
 	// unchecked due to warnings on jsonObject.put()
 	@SuppressWarnings("unchecked")
-	private JSONObject getBody(Exception e) {
-				
+	private JSONObject getErrorBody(Exception e, int statusCode) {
+		
 		JSONObject jsonBody = new JSONObject();
 		jsonBody.put(EXCEPTION, e.getMessage());
-		jsonBody.put(STATUS_CODE, STATUS_CODE_ERROR);
+		jsonBody.put(STATUS_CODE, statusCode);
 		return jsonBody;
 	}
 	
 	// unchecked due to warnings on jsonObject.put()
 	@SuppressWarnings("unchecked")
-	protected void createResponse(JSONObject jsonBody) {
+	private void createResponse(JSONObject jsonBody, int statusCode) {
 		
 		// we want the whole json object in the response.
 		// lambda proxy only returns the body text.
 		jsonResponse = new JSONObject();
 		jsonResponse.put(BASE64ENCODED, false);
-		jsonResponse.put(LambdaProxyInput.BODY, jsonBody.toJSONString());
-		jsonResponse.put(STATUS_CODE, jsonBody.get(STATUS_CODE));
+		jsonResponse.put(BODY, jsonBody.toJSONString());
+		jsonResponse.put(STATUS_CODE, statusCode);
 	}
 }

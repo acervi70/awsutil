@@ -13,59 +13,47 @@ import com.amazonaws.services.dynamodbv2.document.BatchWriteItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 
+
 public class DynamodbManager {
-
-	private static final String RETRY_ERROR = "unable to update/retry the entire list of failed batches";
-
-	private static volatile DynamodbManager instance;
-
-    private DynamoDB dynamodb;
-    private DynamoDBMapper dynamodbMapper;
-
+	
+	private final AmazonDynamoDB client;
+	
+    private static class DynamodbManagerInstance {
+    	
+        private static final DynamodbManager INSTANCE = new DynamodbManager();
+    }
+    
     private DynamodbManager() {
     	
-    		AmazonDynamoDB client;
-    		
-    		if (DynamodbConfig.getRunLocal()) {    			
-    			EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(
-    					DynamodbConfig.RUNLOCAL_ENDPOINT, DynamodbConfig.RUNLOCAL_REGION);    			
+		if (DynamodbConfig.getRunLocal()) {    			
+			EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration(
+					DynamodbConfig.getRunLocalEndpoint(), DynamodbConfig.getRunLocalRegion());    			
 			client = AmazonDynamoDBClientBuilder.standard().withEndpointConfiguration(endpoint).build();    			    			
-    		}
-    		else {
-    			String region = DynamodbConfig.getRegion();
+		}
+		else {
+			String region = DynamodbConfig.getRegion();
 	    		if (region == null || region.isEmpty()) {
 	    			client = AmazonDynamoDBClientBuilder.standard().build();
 	    		}
 	    		else {
 	    			client = AmazonDynamoDBClientBuilder.standard().withRegion(region).build();
 	    		}
-    		}
-    		
-    		dynamodb = new DynamoDB(client);
-    		dynamodbMapper = new DynamoDBMapper(client);
+		}
     }
-
-    private static DynamodbManager instance() {
-
-        if (instance == null) {
-            synchronized(DynamodbManager.class) {
-                if (instance == null)
-                    instance = new DynamodbManager();
-            }
-        }
-        return instance;
+    
+    private static DynamodbManager getInstance() {
+    	
+        return DynamodbManagerInstance.INSTANCE;
     }
-
+ 
     public static DynamoDB dynamodb() {
 
-        DynamodbManager manager = instance();
-        return manager.dynamodb;
-    }   
+		return new DynamoDB(getInstance().client);
+    }
 
     public static DynamoDBMapper mapper() {
 
-        DynamodbManager manager = instance();
-        return manager.dynamodbMapper;
+		return new DynamoDBMapper(getInstance().client);
     }
 
 	public static void handleUnprocessedItems(List<FailedBatch> listFailedBatch) throws Exception{
@@ -91,6 +79,7 @@ public class DynamodbManager {
 		}
 		
 		if (mapUnprocessed.size() > 0 ) {
+			final String RETRY_ERROR = "unable to update/retry the entire list of failed batches";
 			throw new Exception(RETRY_ERROR);
 		}
 	}
