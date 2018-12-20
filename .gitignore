@@ -40,3 +40,7 @@ src/main/java/com/reigninbinary/util/aws/\.DS_Store
 \.vscode/launch\.json
 
 \.vscode/settings\.json
+
+src/main/java/com/reigninbinary/cloud/aws/\.DS_Store
+
+src/main/java/com/reigninbinary/cloud/aws/lambda/\.DS_Store
