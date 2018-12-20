@@ -3,6 +3,8 @@ package com.reigninbinary.aws.dynamodb;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -13,7 +15,6 @@ import com.amazonaws.services.dynamodbv2.document.BatchWriteItemOutcome;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 
-// Singleton with lazy loading of dynamodb client.
 
 public class DynamodbManager {
 	
@@ -33,12 +34,12 @@ public class DynamodbManager {
 		}
 		else {
 			String region = DynamodbConfig.getRegion();
-	    		if (region == null || region.isEmpty()) {
-	    			client = AmazonDynamoDBClientBuilder.standard().build();
-	    		}
-	    		else {
-	    			client = AmazonDynamoDBClientBuilder.standard().withRegion(region).build();
-	    		}
+			if (StringUtils.isNotEmpty(region)) {
+    			client = AmazonDynamoDBClientBuilder.standard().withRegion(region).build();
+    		}
+    		else {
+    			client = AmazonDynamoDBClientBuilder.standard().build();
+    		}
 		}
     }
     
@@ -57,31 +58,38 @@ public class DynamodbManager {
 		return new DynamoDBMapper(getInstance().client);
     }
 
-	public static void handleUnprocessedItems(List<FailedBatch> listFailedBatch) throws Exception{
-		
-		for (FailedBatch failed : listFailedBatch) {
-			handleUnprocessedItems(failed);
-		}
-	}
-
 	// https://github.com/aws/aws-sdk-java/blob/master/src/samples/AmazonDynamoDBDocumentAPI/quick-start/com/amazonaws/services/dynamodbv2/document/quickstart/I_BatchWriteItemTest.java
-	public static void handleUnprocessedItems(FailedBatch failedBatch) throws Exception{
+	public static Map<String, List<WriteRequest>> handleUnprocessedItems(FailedBatch failedBatch) throws InterruptedException {
 		
 		Map<String, List<WriteRequest>> mapUnprocessed = failedBatch.getUnprocessedItems();
 		
-		for (int attempts = 0; mapUnprocessed.size() > 0 
-				&& attempts++ < DynamodbConfig.getMaxRetryUnprocessedItems();) {
+		for (int attempts = 0; 
+				mapUnprocessed.size() > 0 && 
+				attempts++ < DynamodbConfig.getMaxRetryUnprocessedItems();) {
 			
-            // exponential backoff per DynamoDB recommendation.
-            Thread.sleep((1 << attempts) * 1000);
+            // exponential backoff per Amazon recommendation.
+			Thread.sleep((1 << attempts) * 1000);
 			
 			BatchWriteItemOutcome outcome = dynamodb().batchWriteItemUnprocessed(mapUnprocessed);				
 			mapUnprocessed = outcome.getUnprocessedItems();
 		}
 		
-		if (mapUnprocessed.size() > 0 ) {
-			final String RETRY_ERROR = "unable to update/retry all records in failed batch";
-			throw new Exception(RETRY_ERROR);
-		}
+		return mapUnprocessed;
 	}
+	
+    /*
+	public static Map<String, List<WriteRequest>> handleUnprocessedItems(List<FailedBatch> listFailedBatch) throws Exception{
+		
+		Map<String, List<WriteRequest>> mapUnprocessed = new HashMap<>();
+		
+		for (FailedBatch failed : listFailedBatch) {
+			// TODO: Make sure the key value doesn't overlap/collide across  
+			// FailedBatch collections otherwise we might overwrite an item.
+			// For now, we'll just let the clients figure out how to handle this.
+			mapUnprocessed.putAll(handleUnprocessedItems(failed));
+		}
+		
+		return mapUnprocessed;
+	}
+	*/
 }

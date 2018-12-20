@@ -72,14 +72,7 @@ public class SesAttachment implements DataSource {
 	
 	private InputStream getInputStreamFromFile(File file, String filename) throws IOException {
 		
-		FileDataSource fds = new FileDataSource(file) {
-			public String getContentType() {
-				return SesMimeTypes.getMimeTypeFromFilename(filename);
-			}
-			public String getName() {
-				return filename;
-			}
-		};
+		FileDataSource fds = new FileDataSource(file);
 		return fds.getInputStream();
 	}
 

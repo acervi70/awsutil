@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.reigninbinary.aws.util.AwsUtilException;
-import com.reigninbinary.core.util.CoreLogging;
+import com.reigninbinary.core.CoreLogging;
 import com.reigninbinary.aws.s3.S3Client;
 
 public class SesAttachments {

@@ -1,6 +1,6 @@
 package com.reigninbinary.aws.s3;
 
-import com.reigninbinary.core.util.CoreConfig;
+import com.reigninbinary.core.CoreConfig;
 
 public class S3Env {
 

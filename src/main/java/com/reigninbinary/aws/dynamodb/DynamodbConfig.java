@@ -1,6 +1,6 @@
 package com.reigninbinary.aws.dynamodb;
 
-import com.reigninbinary.core.util.CoreConfig;
+import com.reigninbinary.core.CoreConfig;
 
 
 public class DynamodbConfig {
@@ -21,7 +21,7 @@ public class DynamodbConfig {
 	private static final int MAX_BATCHWRITEITEM_DEFAULT = 25; // from AWS code samples
 
 	private static final String MAX_RETRYUNPROCESSEDITEMS_PARAM = "DYNAMODB_MAX_RETRYUNPROCESSEDITEMS";
-	private static final int MAX_RETRYUNPROCESSEDITEMS_DEFAULT = 3; // arbitrary default
+	private static final int MAX_RETRYUNPROCESSEDITEMS_DEFAULT = 3; // best-guess default
 
 
 	public static boolean getRunLocal() {

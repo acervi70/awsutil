@@ -31,8 +31,8 @@ import com.amazonaws.services.simpleemail.model.SendRawEmailRequest;
 import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
 import com.amazonaws.services.simpleemail.model.Template;
 import com.amazonaws.services.simpleemail.model.UpdateTemplateRequest;
-import com.reigninbinary.core.util.CoreLogging;
 import com.reigninbinary.aws.util.AwsUtilException;
+import com.reigninbinary.core.CoreLogging;
 import com.reigninbinary.aws.ses.SesEmailTemplate;
 import com.reigninbinary.aws.ses.SesRenderedTemplate;
 
@@ -41,10 +41,10 @@ public class SesClient {
 	private static final AmazonSimpleEmailService client;
 	static {
 		String region = SesEnv.getSesRegion();
-		if (!StringUtils.isNotBlank(region)) {
-			client = AmazonSimpleEmailServiceClientBuilder.standard().build();
-		} else {
+		if (StringUtils.isNotBlank(region)) {
 			client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(region).build();
+		} else {
+			client = AmazonSimpleEmailServiceClientBuilder.standard().build();
 		}
 	}
 

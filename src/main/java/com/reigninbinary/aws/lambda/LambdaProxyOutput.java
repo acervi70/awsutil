@@ -12,7 +12,7 @@ import org.json.simple.JSONObject;
  * headers are optional.
  * body is user supplied return data.
  * status code is normally http status code
- * isBase64Encoded is assumed false for the time being.
+ * isBase64Encoded is assumed false for the time being ***
  * 
 	{
 	    "isBase64Encoded": true|false,
@@ -30,9 +30,8 @@ public class LambdaProxyOutput {
 	private static final String STATUS_CODE = "statusCode";
 	private static final String EXCEPTION = "exception";
 	
-	// TODO: allow client to specify 'true' for this value.
 	private static final String ISBASE64ENCODED = "isBase64Encoded";
-	private static final boolean BASE64ENCODED = false;
+	private boolean base64Encoded = false;
 
 	private static final int STATUS_CODE_OK = 200;
 	private static final int STATUS_CODE_ERROR = 500;
@@ -41,14 +40,24 @@ public class LambdaProxyOutput {
 	
 	private JSONObject jsonResponse;
 				
-	public LambdaProxyOutput(JSONObject jsonBody) {
+	public LambdaProxyOutput(JSONObject jsonResponseBody) {
 
-		this(jsonBody, STATUS_CODE_OK);		
+		this(jsonResponseBody, STATUS_CODE_OK);		
 	}
 	
-	public LambdaProxyOutput(JSONObject jsonBody, int statusCode) {
+	public LambdaProxyOutput(JSONObject jsonResponseBody, int statusCode) {
 		
-		createResponse(jsonBody, statusCode);		
+		createResponse(jsonResponseBody, statusCode);		
+	}
+	
+	public LambdaProxyOutput(String jsonResponseBody) {
+
+		this(jsonResponseBody, STATUS_CODE_OK);		
+	}
+	
+	public LambdaProxyOutput(String jsonResponseBody, int statusCode) {
+		
+		createResponse(jsonResponseBody, statusCode);		
 	}
 	
 	public LambdaProxyOutput(Exception e)  {
@@ -60,6 +69,14 @@ public class LambdaProxyOutput {
 		createResponse(getErrorBody(e, statusCode), statusCode);		
 	}
 	
+	public boolean isBase64Encoded() {
+		return base64Encoded;
+	}
+
+	public void setBase64Encoded(boolean base64Encoded) {
+		this.base64Encoded = base64Encoded;
+	}
+
 	public String getAsJsonString() {
 		
 		return jsonResponse.toJSONString();
@@ -87,15 +104,21 @@ public class LambdaProxyOutput {
 		return jsonBody;
 	}
 	
+	private void createResponse(JSONObject jsonBody, int statusCode) {
+		
+		createResponse(jsonBody.toJSONString(), statusCode);
+	}
+	
 	// unchecked due to warnings on jsonObject.put()
 	@SuppressWarnings("unchecked")
-	private void createResponse(JSONObject jsonBody, int statusCode) {
+	private void createResponse(String jsonBody, int statusCode) {
 		
 		// we want the whole json object in the response.
 		// lambda proxy only returns the body text.
+		
 		jsonResponse = new JSONObject();
-		jsonResponse.put(ISBASE64ENCODED, BASE64ENCODED);
-		jsonResponse.put(BODY, jsonBody.toJSONString());
+		jsonResponse.put(ISBASE64ENCODED, base64Encoded);
+		jsonResponse.put(BODY, jsonBody);
 		jsonResponse.put(STATUS_CODE, statusCode);
 	}
 }

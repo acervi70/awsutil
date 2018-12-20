@@ -1,7 +1,7 @@
 package com.reigninbinary.aws.lambda;
 
 import com.amazonaws.HttpMethod;
-import com.reigninbinary.core.util.CoreConfig;
+import com.reigninbinary.core.CoreConfig;
 
 public class LambdaUtility {
 	

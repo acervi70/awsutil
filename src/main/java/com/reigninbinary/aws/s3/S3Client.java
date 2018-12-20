@@ -23,10 +23,10 @@ public class S3Client {
 	static AmazonS3 s3client;
 	static {
 		String region = S3Env.getRegion();
-		if (!StringUtils.isNotBlank(region)) {
-			s3client = AmazonS3ClientBuilder.standard().build();
-		} else {
+		if (StringUtils.isNotBlank(region)) {
 			s3client = AmazonS3ClientBuilder.standard().withRegion(region).build();
+		} else {
+			s3client = AmazonS3ClientBuilder.standard().build();
 		}
 	}
 
@@ -71,7 +71,6 @@ public class S3Client {
 			S3Object s3object = s3client.getObject(bucketName, filenameWithPath);
 			S3ObjectInputStream inputStream = s3object.getObjectContent();
 			return inputStream;
-
 		} catch (AmazonServiceException e) {
 			throw new AwsUtilException(String.format(ERRFMT, bucketName, filenameWithPath), e);
 		} catch (SdkClientException e) {

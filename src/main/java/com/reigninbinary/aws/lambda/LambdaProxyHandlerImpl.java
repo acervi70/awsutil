@@ -11,27 +11,35 @@ public class LambdaProxyHandlerImpl implements RequestStreamHandler {
 	
 	LambdaProxyHandlerFactory lambdaProxyHandlerFactory;
 	
+	public LambdaProxyHandlerImpl() {}
+	
 	public LambdaProxyHandlerImpl(LambdaProxyHandlerFactory lamdaProxyHandlerFactory) {
+		
+		setHandlerFactory(lamdaProxyHandlerFactory);
+	}
+	
+	public void setHandlerFactory(LambdaProxyHandlerFactory lamdaProxyHandlerFactory) {
+		
 		this.lambdaProxyHandlerFactory = lamdaProxyHandlerFactory;
 	}
 
     @Override
     public void handleRequest(InputStream inputStream, OutputStream outputStream, Context context) throws IOException {
 
-    		LambdaProxyOutput output;
-    		try {
+		LambdaProxyOutput output;
+		try {
 			LambdaProxyInput input = new LambdaProxyInput(inputStream);
 			context.getLogger().log(input.getLogMessage());
 			
 			LambdaProxyHandler handler = lambdaProxyHandlerFactory.getHandler(input);
 			output = handler.handleRequest(input, context);
 		} 
-    		catch (Exception e) {
+		catch (Exception e) {
 			output = new LambdaProxyOutput(e);
 		}
     		
-    		context.getLogger().log(output.getLogMessage());
-    		output.writeToOutputStream(outputStream);
+		context.getLogger().log(output.getLogMessage());
+		output.writeToOutputStream(outputStream);
     }
 
 }

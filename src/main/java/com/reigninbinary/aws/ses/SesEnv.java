@@ -1,6 +1,6 @@
 package com.reigninbinary.aws.ses;
 
-import com.reigninbinary.core.util.CoreConfig;
+import com.reigninbinary.core.CoreConfig;
 
 public class SesEnv {
 
