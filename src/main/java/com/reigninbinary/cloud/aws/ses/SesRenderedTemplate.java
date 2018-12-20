@@ -1,4 +1,4 @@
-package com.reigninbinary.aws.ses;
+package com.reigninbinary.cloud.aws.ses;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -8,8 +8,8 @@ import java.util.Map;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
-import com.reigninbinary.aws.util.AwsUtilException;
-import com.reigninbinary.aws.ses.SesEmailInfo;
+import com.reigninbinary.cloud.aws.AwsCloudException;
+import com.reigninbinary.cloud.aws.ses.SesEmailInfo;
 
 public class SesRenderedTemplate implements SesEmailTemplate {
 
@@ -18,12 +18,12 @@ public class SesRenderedTemplate implements SesEmailTemplate {
 
 	private SesEmailTemplate emailTemplate;
 
-	public SesRenderedTemplate(SesEmailTemplate emailTemplate, SesEmailInfo emailInfo) throws AwsUtilException {
+	public SesRenderedTemplate(SesEmailTemplate emailTemplate, SesEmailInfo emailInfo) throws AwsCloudException {
 		this(emailTemplate, emailInfo.getMergeFields());
 	}
 
 	public SesRenderedTemplate(SesEmailTemplate emailTemplate, Map<String, Object> mapTemplateData)
-			throws AwsUtilException {
+			throws AwsCloudException {
 
 		Mustache m;
 		String template;
@@ -37,7 +37,7 @@ public class SesRenderedTemplate implements SesEmailTemplate {
 		try {
 			m.execute(writer, mapTemplateData).flush();
 		} catch (IOException e) {
-			throw new AwsUtilException(e);
+			throw new AwsCloudException(e);
 		}
 		this.renderedText = writer.toString();
 
@@ -47,7 +47,7 @@ public class SesRenderedTemplate implements SesEmailTemplate {
 		try {
 			m.execute(writer, mapTemplateData).flush();
 		} catch (IOException e) {
-			throw new AwsUtilException(e);
+			throw new AwsCloudException(e);
 		}
 		this.renderedHtml = writer.toString();
 

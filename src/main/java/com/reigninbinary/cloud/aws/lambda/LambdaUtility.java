@@ -1,4 +1,4 @@
-package com.reigninbinary.aws.lambda;
+package com.reigninbinary.cloud.aws.lambda;
 
 import com.amazonaws.HttpMethod;
 import com.reigninbinary.core.CoreConfig;

@@ -1,4 +1,4 @@
-package com.reigninbinary.aws.ses;
+package com.reigninbinary.cloud.aws.ses;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.reigninbinary.aws.util.AwsUtilException;
+import com.reigninbinary.cloud.aws.AwsCloudException;
+import com.reigninbinary.cloud.aws.s3.S3Client;
 import com.reigninbinary.core.CoreLogging;
-import com.reigninbinary.aws.s3.S3Client;
 
 public class SesAttachments {
 
@@ -36,7 +36,7 @@ public class SesAttachments {
 		cache = CacheBuilder.newBuilder().expireAfterWrite(timeout, TimeUnit.MINUTES).build();
 	}
 
-	public static SesAttachment getAttachment(String directory, String filename) throws AwsUtilException {
+	public static SesAttachment getAttachment(String directory, String filename) throws AwsCloudException {
 
 		String filenameWithPath = constructFilenameWithPath(directory, filename);
 
@@ -49,13 +49,13 @@ public class SesAttachments {
 				inputStream.close();
 			} catch (IOException e) {
 				final String ERRFMT = "failed to read file from S3: %s";
-				throw new AwsUtilException(String.format(ERRFMT, filenameWithPath), e);
+				throw new AwsCloudException(String.format(ERRFMT, filenameWithPath), e);
 			}
 		}
 		return attachment;
 	}
 
-	public static void addFileToAttachments(File file, String directory, String filename) throws AwsUtilException {
+	public static void addFileToAttachments(File file, String directory, String filename) throws AwsCloudException {
 
 		CoreLogging.logInfo("addFileToAttachments; writing file attachment to S3");
 
@@ -67,7 +67,7 @@ public class SesAttachments {
 			writeFileToS3(attachment.getInputStream(), filenameWithPath);
 		} catch (IOException e) {
 			final String ERRFMT = "failed to write file to S3: %s";
-			throw new AwsUtilException(String.format(ERRFMT, filenameWithPath), e);
+			throw new AwsCloudException(String.format(ERRFMT, filenameWithPath), e);
 		}
 	}
 	
@@ -81,7 +81,7 @@ public class SesAttachments {
 		instance().cache.put(filenameWithPath, attachment);
 	}
 
-	private static void writeFileToS3(InputStream inputStream, String filenameWithPath) throws AwsUtilException {
+	private static void writeFileToS3(InputStream inputStream, String filenameWithPath) throws AwsCloudException {
 
 		String attBucket = SesEnv.getEmailAttachmentsS3Bucket();
 		S3Client.uploadFile(attBucket, filenameWithPath, inputStream);
@@ -89,13 +89,13 @@ public class SesAttachments {
 
 	// currently not called yet.
 	@SuppressWarnings("unused")
-	private static void writeFileToS3(File file, String filenameWithPath) throws AwsUtilException {
+	private static void writeFileToS3(File file, String filenameWithPath) throws AwsCloudException {
 
 		String attBucket = SesEnv.getEmailAttachmentsS3Bucket();
 		S3Client.uploadFile(attBucket, filenameWithPath, file);
 	}
 
-	private static InputStream readFileStreamFromS3(String filenameWithPath) throws AwsUtilException {
+	private static InputStream readFileStreamFromS3(String filenameWithPath) throws AwsCloudException {
 
 		String attBucket = SesEnv.getEmailAttachmentsS3Bucket();
 		return S3Client.getFileStream(attBucket, filenameWithPath);

@@ -1,4 +1,4 @@
-package com.reigninbinary.aws.ses;
+package com.reigninbinary.cloud.aws.ses;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -11,30 +11,30 @@ import javax.activation.FileDataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.mail.util.SharedByteArrayInputStream;
 
-import com.reigninbinary.aws.util.AwsUtilException;
+import com.reigninbinary.cloud.aws.AwsCloudException;
 
 public class SesAttachment implements DataSource {
 
 	private ByteArrayDataSource dataSource;
 
-	public SesAttachment(File file, String filename) throws AwsUtilException {
+	public SesAttachment(File file, String filename) throws AwsCloudException {
 
 		try {
 			InputStream inputStream = getInputStreamFromFile(file, filename);
 			createDataSourced(inputStream, filename);
 		} catch (IOException e) {
 			final String ERRFMT = "faled to create attachment from File; filename: %s";
-			throw new AwsUtilException(String.format(ERRFMT, filename));
+			throw new AwsCloudException(String.format(ERRFMT, filename));
 		}
 	}
 
-	public SesAttachment(InputStream inputStream, String filename) throws AwsUtilException {
+	public SesAttachment(InputStream inputStream, String filename) throws AwsCloudException {
 
 		try {
 			createDataSourced(inputStream, filename);
 		} catch (IOException e) {
 			final String ERRFMT = "faled to create attachment from input stream; filename: %s";
-			throw new AwsUtilException(String.format(ERRFMT, filename));
+			throw new AwsCloudException(String.format(ERRFMT, filename));
 		}
 	}
 

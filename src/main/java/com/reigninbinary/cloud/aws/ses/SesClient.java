@@ -1,4 +1,4 @@
-package com.reigninbinary.aws.ses;
+package com.reigninbinary.cloud.aws.ses;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,10 +31,10 @@ import com.amazonaws.services.simpleemail.model.SendRawEmailRequest;
 import com.amazonaws.services.simpleemail.model.SendTemplatedEmailRequest;
 import com.amazonaws.services.simpleemail.model.Template;
 import com.amazonaws.services.simpleemail.model.UpdateTemplateRequest;
-import com.reigninbinary.aws.util.AwsUtilException;
+import com.reigninbinary.cloud.aws.AwsCloudException;
+import com.reigninbinary.cloud.aws.ses.SesEmailTemplate;
+import com.reigninbinary.cloud.aws.ses.SesRenderedTemplate;
 import com.reigninbinary.core.CoreLogging;
-import com.reigninbinary.aws.ses.SesEmailTemplate;
-import com.reigninbinary.aws.ses.SesRenderedTemplate;
 
 public class SesClient {
 
@@ -75,7 +75,7 @@ public class SesClient {
 	}
 
 	public SesRenderedTemplate testRenderTemplate(SesEmailTemplate template, Map<String, Object> mapTemplateData)
-			throws AwsUtilException {
+			throws AwsCloudException {
 
 		SesRenderedTemplate renderedTemplate = new SesRenderedTemplate(template, mapTemplateData);
 		return renderedTemplate;
@@ -92,7 +92,7 @@ public class SesClient {
 		client.sendTemplatedEmail(request);
 	}
 
-	public void sendEmailUsingTemplate(SesEmailInfo emailInfo, SesEmailTemplate emailTemplate) throws AwsUtilException {
+	public void sendEmailUsingTemplate(SesEmailInfo emailInfo, SesEmailTemplate emailTemplate) throws AwsCloudException {
 
 		SesRenderedTemplate renderedTemplate = new SesRenderedTemplate(emailTemplate, emailInfo);
 		sendRawEmail(emailInfo, renderedTemplate);
@@ -138,14 +138,14 @@ public class SesClient {
 		return addresses;
 	}
 
-	private void sendRawEmail(SesEmailInfo emailInfo, SesRenderedTemplate renderedTemplate) throws AwsUtilException {
+	private void sendRawEmail(SesEmailInfo emailInfo, SesRenderedTemplate renderedTemplate) throws AwsCloudException {
 
 		SesAttachment attachment = null;
 		if (SesEnv.isEmailAttachmentsEnabled()) {
 			try {
 				attachment = SesAttachments.getAttachment(emailInfo.getAttachmentDirectory(),
 						emailInfo.getAttachmentFilename());
-			} catch (AwsUtilException e) {
+			} catch (AwsCloudException e) {
 				// continue to send email without attachament
 				CoreLogging.logSevere(
 					String.format("failed to download attachment from S3; email: %s, attdir: %s, attfname: %s",
@@ -161,9 +161,9 @@ public class SesClient {
 					renderedTemplate.getSubject(), renderedTemplate.getText(),
 					renderedTemplate.getHtml(), attachment);
 		} catch (MessagingException e) {
-			throw new AwsUtilException(e);
+			throw new AwsCloudException(e);
 		} catch (IOException e) {
-			throw new AwsUtilException(e);
+			throw new AwsCloudException(e);
 		}
 	}
 

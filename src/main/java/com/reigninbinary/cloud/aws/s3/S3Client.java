@@ -1,4 +1,4 @@
-package com.reigninbinary.aws.s3;
+package com.reigninbinary.cloud.aws.s3;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -15,8 +15,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
-
-import com.reigninbinary.aws.util.AwsUtilException;
+import com.reigninbinary.cloud.aws.AwsCloudException;
 
 public class S3Client {
 
@@ -31,7 +30,7 @@ public class S3Client {
 	}
 
 	public static void uploadFile(String bucketName, String filenameWithPath, InputStream inputStream)
-			throws AwsUtilException {
+			throws AwsCloudException {
 
 		final String ERRFMT = "failed to upload file to S3; bucket: %s, file: %s ";
 		try {
@@ -41,29 +40,29 @@ public class S3Client {
 			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 			s3client.putObject(bucketName, filenameWithPath, byteArrayInputStream, metadata);
 		} catch (AmazonServiceException e) {
-			throw new AwsUtilException(String.format(ERRFMT, bucketName, filenameWithPath), e);
+			throw new AwsCloudException(String.format(ERRFMT, bucketName, filenameWithPath), e);
 		} catch (SdkClientException e) {
-			throw new AwsUtilException(String.format(ERRFMT, bucketName, filenameWithPath), e);
+			throw new AwsCloudException(String.format(ERRFMT, bucketName, filenameWithPath), e);
 		} catch (IOException e) {
-			throw new AwsUtilException(String.format(ERRFMT, bucketName, filenameWithPath), e);
+			throw new AwsCloudException(String.format(ERRFMT, bucketName, filenameWithPath), e);
 		}
 	}
 
-	public static void uploadFile(String bucketName, String filenameWithPath, File file) throws AwsUtilException {
+	public static void uploadFile(String bucketName, String filenameWithPath, File file) throws AwsCloudException {
 
 		final String ERRFMT = "failed to upload file to S3; bucket: %s, file: %s ";
 
 		try {
 			s3client.putObject(bucketName, filenameWithPath, file);
 		} catch (AmazonServiceException e) {
-			throw new AwsUtilException(String.format(ERRFMT, bucketName, filenameWithPath), e);
+			throw new AwsCloudException(String.format(ERRFMT, bucketName, filenameWithPath), e);
 		} catch (SdkClientException e) {
-			throw new AwsUtilException(String.format(ERRFMT, bucketName, filenameWithPath), e);
+			throw new AwsCloudException(String.format(ERRFMT, bucketName, filenameWithPath), e);
 		}
 	}
 
 	public static S3ObjectInputStream getFileStream(String bucketName, String filenameWithPath)
-			throws AwsUtilException {
+			throws AwsCloudException {
 
 		final String ERRFMT = "failed to download file from S3; bucket: %s, file: %s ";
 
@@ -72,9 +71,9 @@ public class S3Client {
 			S3ObjectInputStream inputStream = s3object.getObjectContent();
 			return inputStream;
 		} catch (AmazonServiceException e) {
-			throw new AwsUtilException(String.format(ERRFMT, bucketName, filenameWithPath), e);
+			throw new AwsCloudException(String.format(ERRFMT, bucketName, filenameWithPath), e);
 		} catch (SdkClientException e) {
-			throw new AwsUtilException(String.format(ERRFMT, bucketName, filenameWithPath), e);
+			throw new AwsCloudException(String.format(ERRFMT, bucketName, filenameWithPath), e);
 		}
 	}
 }

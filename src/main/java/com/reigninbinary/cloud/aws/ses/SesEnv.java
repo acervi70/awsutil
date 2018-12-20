@@ -1,4 +1,4 @@
-package com.reigninbinary.aws.ses;
+package com.reigninbinary.cloud.aws.ses;
 
 import com.reigninbinary.core.CoreConfig;
 

@@ -1,4 +1,4 @@
-package com.reigninbinary.aws.lambda;
+package com.reigninbinary.cloud.aws.lambda;
 
 public interface LambdaProxyHandlerFactory {
 

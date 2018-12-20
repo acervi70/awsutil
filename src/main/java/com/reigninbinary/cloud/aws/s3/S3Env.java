@@ -1,4 +1,4 @@
-package com.reigninbinary.aws.s3;
+package com.reigninbinary.cloud.aws.s3;
 
 import com.reigninbinary.core.CoreConfig;
 

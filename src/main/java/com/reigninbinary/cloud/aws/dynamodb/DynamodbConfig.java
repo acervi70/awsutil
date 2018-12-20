@@ -1,4 +1,4 @@
-package com.reigninbinary.aws.dynamodb;
+package com.reigninbinary.cloud.aws.dynamodb;
 
 import com.reigninbinary.core.CoreConfig;
 
