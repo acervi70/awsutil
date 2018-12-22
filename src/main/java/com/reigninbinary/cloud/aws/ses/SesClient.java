@@ -103,15 +103,19 @@ public class SesClient {
 		Address[] addresses = null;
 
 		if (bccEmailAddresses != null && bccEmailAddresses.length > 0) {
+			
 			ArrayList<Address> addressList = new ArrayList<>();
+			
 			for (String email : bccEmailAddresses) {
 				try {
 					addressList.add(new InternetAddress(email.trim()));
-				} catch (AddressException e) {
+				} 
+				catch (AddressException e) {
 					String FMT = "inavlid bcc email address: %s; %s";
 					CoreLogging.logSevere(String.format(FMT, email, e.getMessage()));
 				}
 			}
+			
 			addresses = (Address[]) addressList.toArray(new Address[addressList.size()]);
 		}
 		
@@ -123,30 +127,39 @@ public class SesClient {
 		Address[] addresses = null;
 
 		if (ccEmailAddresses != null && ccEmailAddresses.length > 0) {
+			
 			ArrayList<Address> addressList = new ArrayList<>();
+			
 			for (String email : ccEmailAddresses) {
 				try {
 					addressList.add(new InternetAddress(email.trim()));
-				} catch (AddressException e) {
+				}
+				catch (AddressException e) {
 					String FMT = "inavlid bcc email address: %s; %s";
 					CoreLogging.logSevere(String.format(FMT, email, e.getMessage()));
 				}
 			}
+			
 			addresses = (Address[]) addressList.toArray(new Address[addressList.size()]);
 		}
 		
 		return addresses;
 	}
 
-	private void sendRawEmail(SesEmailInfo emailInfo, SesRenderedTemplate renderedTemplate) throws AwsCloudException {
+	private void sendRawEmail(SesEmailInfo emailInfo, 
+			SesRenderedTemplate renderedTemplate) throws AwsCloudException {
 
 		SesAttachment attachment = null;
 		if (SesEnv.isEmailAttachmentsEnabled()) {
 			try {
 				attachment = SesAttachments.getAttachment(emailInfo.getAttachmentDirectory(),
 						emailInfo.getAttachmentFilename());
-			} catch (AwsCloudException e) {
-				// continue to send email without attachament
+			} 
+			catch (AwsCloudException e) {
+				
+				// TODO: make this configurable
+				// continue to send email without attachment
+				
 				CoreLogging.logSevere(
 					String.format("failed to download attachment from S3; email: %s, attdir: %s, attfname: %s",
 					emailInfo.getEmailAddress(), emailInfo.getAttachmentDirectory(),
@@ -160,9 +173,13 @@ public class SesClient {
 					getBccEmailAddresses(emailInfo.getBccAddresses()),
 					renderedTemplate.getSubject(), renderedTemplate.getText(),
 					renderedTemplate.getHtml(), attachment);
-		} catch (MessagingException e) {
+		} 
+		catch (MessagingException e) {
+			
 			throw new AwsCloudException(e);
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
+			
 			throw new AwsCloudException(e);
 		}
 	}
@@ -170,6 +187,7 @@ public class SesClient {
 	private String getToAddress(String toAddress) {
 
 		String toAddressDebug = SesEnv.getToEmailAddressDebug();
+		
 		if (StringUtils.isNotBlank(toAddressDebug)) {
 			CoreLogging.logInfo(String.format("Using debug TO address: %s", toAddressDebug));
 			return toAddressDebug;

@@ -18,12 +18,16 @@ public class SesRenderedTemplate implements SesEmailTemplate {
 
 	private SesEmailTemplate emailTemplate;
 
-	public SesRenderedTemplate(SesEmailTemplate emailTemplate, SesEmailInfo emailInfo) throws AwsCloudException {
+	public SesRenderedTemplate(
+			SesEmailTemplate emailTemplate, 
+			SesEmailInfo emailInfo) throws AwsCloudException {
+		
 		this(emailTemplate, emailInfo.getMergeFields());
 	}
 
-	public SesRenderedTemplate(SesEmailTemplate emailTemplate, Map<String, Object> mapTemplateData)
-			throws AwsCloudException {
+	public SesRenderedTemplate(
+			SesEmailTemplate emailTemplate, 
+			Map<String, Object> mapTemplateData) throws AwsCloudException {
 
 		Mustache m;
 		String template;

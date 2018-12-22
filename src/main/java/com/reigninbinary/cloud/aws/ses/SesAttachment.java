@@ -22,7 +22,9 @@ public class SesAttachment implements DataSource {
 		try {
 			InputStream inputStream = getInputStreamFromFile(file, filename);
 			createDataSourced(inputStream, filename);
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
+			
 			final String ERRFMT = "faled to create attachment from File; filename: %s";
 			throw new AwsCloudException(String.format(ERRFMT, filename));
 		}
@@ -32,8 +34,10 @@ public class SesAttachment implements DataSource {
 
 		try {
 			createDataSourced(inputStream, filename);
-		} catch (IOException e) {
-			final String ERRFMT = "faled to create attachment from input stream; filename: %s";
+		} 
+		catch (IOException e) {
+			
+			final String ERRFMT = "faled to create attachment from InputStream; filename: %s";
 			throw new AwsCloudException(String.format(ERRFMT, filename));
 		}
 	}

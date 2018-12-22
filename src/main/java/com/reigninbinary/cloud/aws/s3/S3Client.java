@@ -14,9 +14,8 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.reigninbinary.cloud.aws.AwsCloudException;
+
 
 public class S3Client {
 	
@@ -64,18 +63,14 @@ public class S3Client {
 			
 			throw new AwsCloudException(String.format(ERRFMT, bucketName, filenameWithPath), e);
 		}
-		
-		s3client.putObject(bucketName, filenameWithPath, file);
 	}
 
-	public static S3ObjectInputStream getInputStreamForS3Object(
+	public static InputStream getInputStreamForS3Object(
 			String bucketName, 
 			String filenameWithPath) throws AwsCloudException {
 
 		try {
-			S3Object s3object = s3client.getObject(bucketName, filenameWithPath);
-			S3ObjectInputStream inputStream = s3object.getObjectContent();
-			return inputStream;
+			return s3client.getObject(bucketName, filenameWithPath).getObjectContent();
 		}
 		catch (AmazonClientException e) {
 			
