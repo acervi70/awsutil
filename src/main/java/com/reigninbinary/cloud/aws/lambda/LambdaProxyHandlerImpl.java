@@ -9,7 +9,7 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 
 public class LambdaProxyHandlerImpl implements RequestStreamHandler {
 	
-	LambdaProxyHandlerFactory lambdaProxyHandlerFactory;
+	private LambdaProxyHandlerFactory lambdaProxyHandlerFactory;
 	
 	public LambdaProxyHandlerImpl() {}
 	
