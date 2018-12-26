@@ -21,7 +21,7 @@ public class SesAttachment implements DataSource {
 
 		try {
 			InputStream inputStream = getInputStreamFromFile(file, filename);
-			createDataSourced(inputStream, filename);
+			createDataSource(inputStream, filename);
 		} 
 		catch (IOException e) {
 			
@@ -33,7 +33,7 @@ public class SesAttachment implements DataSource {
 	public SesAttachment(InputStream inputStream, String filename) throws AwsCloudException {
 
 		try {
-			createDataSourced(inputStream, filename);
+			createDataSource(inputStream, filename);
 		} 
 		catch (IOException e) {
 			
@@ -66,7 +66,7 @@ public class SesAttachment implements DataSource {
 		return dataSource.getOutputStream();
 	}
 	
-	private void createDataSourced(InputStream inputStream, String filename) throws IOException {
+	private void createDataSource(InputStream inputStream, String filename) throws IOException {
 		
 		byte[] bytes = getBytesFromInputStream(inputStream);
 		SharedByteArrayInputStream sharedStream = new SharedByteArrayInputStream(bytes);

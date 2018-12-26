@@ -1,5 +1,7 @@
 package com.reigninbinary.cloud.aws.lambda;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.amazonaws.HttpMethod;
 import com.reigninbinary.core.CoreConfig;
 
@@ -19,7 +21,6 @@ public class LambdaUtility {
 
 	public static String getLambdaEnvParam(String paramName) {
 		
-		// allows us to use config file for params as well.
-		return CoreConfig.getConfigParam(paramName, null);
+		return CoreConfig.getConfigParam(paramName, StringUtils.EMPTY);
 	}	
 }
