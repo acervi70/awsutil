@@ -86,6 +86,7 @@ public class SesAttachments {
 		S3Client.uploadFile(attBucket, filenameWithPath, inputStream);
 	}
 
+	@SuppressWarnings("unused")
 	private static void writeFileToS3(File file, String filenameWithPath) throws AwsCloudException {
 
 		String attBucket = SesEnv.getEmailAttachmentsS3Bucket();
